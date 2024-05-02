@@ -6,9 +6,11 @@ package registeractivity;
 
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import com.sun.jdi.connect.spi.Connection;
+import java.awt.HeadlessException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -23,7 +25,9 @@ public class AdminForm extends javax.swing.JFrame {
     /**
      * Creates new form AdminForm
      */
-    Connection con = null;
+    private java.sql.Connection con;
+    private Statement st;
+    private DefaultTableModel model = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
     
@@ -48,7 +52,8 @@ public class AdminForm extends javax.swing.JFrame {
                 Vector v = new Vector();
                 for(int i =1; i<=n; i++){
                     v.add(rs.getString("id"));
-                    v.add(rs.getString("name"));
+                    v.add(rs.getString("fname"));
+                    v.add(rs.getString("lname"));
                     v.add(rs.getString("username"));
                     v.add(rs.getString("password"));
                     v.add(rs.getString("email"));
@@ -61,10 +66,7 @@ public class AdminForm extends javax.swing.JFrame {
         }catch(Exception e){
             System.out.println("Error!" + e.getMessage());
         }
-    }
-
-   
-    
+    }    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -74,14 +76,29 @@ public class AdminForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField4 = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLback = new javax.swing.JLabel();
         jBDelete = new javax.swing.JButton();
+        jbAdd = new javax.swing.JButton();
+        jbUpdate = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtable = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        lblId = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        lblPass = new javax.swing.JLabel();
+
+        jTextField4.setText("jTextField1");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel5.setText("Name:");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -116,6 +133,22 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
 
+        jbAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jbAdd.setText("Add");
+        jbAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAddActionPerformed(evt);
+            }
+        });
+
+        jbUpdate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jbUpdate.setText("Update");
+        jbUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbUpdateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -123,8 +156,11 @@ public class AdminForm extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
             .addComponent(jLback, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jBDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jbUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -132,30 +168,34 @@ public class AdminForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
+                .addGap(37, 37, 37)
                 .addComponent(jBDelete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbAdd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbUpdate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
                 .addComponent(jLback)
                 .addGap(71, 71, 71))
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 450));
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(0, 204, 204));
 
         jtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "I.D", "Name", "Username", "Password", "Email"
+                "Info Number", "First Name", "Last Name", "Username", "Password", "Email"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                true, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -163,39 +203,87 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
         jtable.getTableHeader().setReorderingAllowed(false);
+        jtable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jtable);
         if (jtable.getColumnModel().getColumnCount() > 0) {
-            jtable.getColumnModel().getColumn(0).setResizable(false);
-            jtable.getColumnModel().getColumn(0).setHeaderValue("I.D");
             jtable.getColumnModel().getColumn(1).setResizable(false);
             jtable.getColumnModel().getColumn(2).setResizable(false);
             jtable.getColumnModel().getColumn(3).setResizable(false);
             jtable.getColumnModel().getColumn(4).setResizable(false);
+            jtable.getColumnModel().getColumn(5).setResizable(false);
         }
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setText("Password");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setText("Username");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel7.setText("Info Number");
+
+        lblId.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+
+        lblUser.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+
+        lblPass.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(81, 81, 81)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(lblUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(69, 69, 69))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblPass, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(85, 85, 85))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblId, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblPass, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 88, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 410, -1));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 490, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 565, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -211,34 +299,50 @@ public class AdminForm extends javax.swing.JFrame {
 
     private void jLbackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLbackMouseClicked
         // TODO add your handling code here:
-        LoginForm l = new LoginForm();
-        l.setVisible(true);
-        dispose();
+        
+        int r = JOptionPane.showConfirmDialog(this, "Are you sure to return?");
+        if(r == 0){
+            LoginForm l = new LoginForm();
+            l.setVisible(true);
+            dispose();
+        }
+       
         
     }//GEN-LAST:event_jLbackMouseClicked
 
     private void jBDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDeleteActionPerformed
-        // TODO add your handling code here:
-        
-        int id = Integer.parseInt(jtable.getValueAt(jtable.getSelectedRow(),0).toString());
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            java.sql.Connection con = DriverManager.getConnection("jdbc:MySQL://localhost:3306/dbregister","root","");
-            Statement st = con.createStatement();
-            
-            int r = JOptionPane.showConfirmDialog(this, "Are you sure to delete the selected row?");
-            if (r == 0){       
-                if(!st.execute("delete from user where id="+ id)){
-                    UpdateData();
-                }
-            }else{
-                //JOptionPane.showMessageDialog(null, "Error! try again");
+  int selectedRow = jtable.getSelectedRow();
+
+if (selectedRow < 0) {
+    if (jtable.getRowCount() == 0) {
+        // if the table is empty (no data) display this message
+        JOptionPane.showMessageDialog(null, "Table is Empty.");
+    } else {
+        // if the table is not empty but row is not selected or multiple row was selected
+        JOptionPane.showMessageDialog(null, "Please select any Single row to delete");
+    }
+} else {
+    int id = Integer.parseInt(jtable.getValueAt(selectedRow, 0).toString());
+
+    // delete row 
+    // if single row is selected than delete
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        java.sql.Connection con = DriverManager.getConnection("jdbc:MySQL://localhost:3306/dbregister", "root", "");
+        Statement st = con.createStatement();
+
+        int r = JOptionPane.showConfirmDialog(this, "Are you sure to delete the selected row?");
+        if (r == 0) {
+            if (!st.execute("delete from user where id=" + id)) {
+                UpdateData();
             }
-            
-        } catch (Exception e) {
+        } else {
+            JOptionPane.showMessageDialog(null, "Operation cancelled.");
         }
-        
-        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    }
+     }
     }//GEN-LAST:event_jBDeleteActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -247,7 +351,68 @@ public class AdminForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowOpened
 
-    public void UpdateData(){
+    private void jbAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAddActionPerformed
+        // TODO add your handling code here:
+        
+        AddNewAdmin a = new AddNewAdmin();
+        a.setVisible(true);
+        dispose();   
+    }//GEN-LAST:event_jbAddActionPerformed
+
+    private void jbUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbUpdateActionPerformed
+        // TODO add your handling code here:
+        
+        String newUsername = JOptionPane.showInputDialog(null, "Enter New Username:");
+        String newPassword = JOptionPane.showInputDialog(null, "Enter New Password:");
+        
+        if (newUsername == null || newPassword == null || newUsername.isEmpty() || newPassword.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Please fill out all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (!newUsername.matches("[a-zA-Z0-9]+")) {
+                        JOptionPane.showMessageDialog(null, "Invalid username. Username should contain only letters and numbers", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (!newPassword.matches("[a-zA-Z0-9]+")) {
+                        JOptionPane.showMessageDialog(null, "Invalid password. Password should contain only letters and numbers.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (newPassword.length() > 20) {
+                        JOptionPane.showMessageDialog(null, "Password should be maximum 20 characters long.", "Error", JOptionPane.ERROR_MESSAGE);   
+                    }else{
+                        try{
+                            String sql = "UPDATE user SET username=?,password=? WHERE id=?";
+                            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbregister","root","");
+                            pst = con.prepareStatement(sql);
+                            pst.setString(3, lblId.getText());
+                            pst.setString(1,newUsername);
+                            pst.setString(2,newPassword);
+                            pst.executeUpdate();
+                            JOptionPane.showMessageDialog(null, "updated successfully");
+                            UpdateData();
+                        }catch(SQLException | HeadlessException ex){
+                            JOptionPane.showMessageDialog(null, ex);
+                        }
+                    }
+
+    }//GEN-LAST:event_jbUpdateActionPerformed
+
+    private void jtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtableMouseClicked
+        // TODO add your handling code here:
+        
+        DefaultTableModel tblModel = (DefaultTableModel) jtable.getModel();
+
+        int selectedRow = jtable.getSelectedRow();
+
+        if (selectedRow != -1) {
+            String id = tblModel.getValueAt(selectedRow, 0).toString();
+            String username = tblModel.getValueAt(selectedRow, 3).toString();
+            String password = tblModel.getValueAt(selectedRow, 4).toString();
+   
+            lblUser.setText(username);
+            lblPass.setText(password);
+            lblId.setText(id);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to edit.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_jtableMouseClicked
+
+     public void UpdateData(){
          String SUrl ,SUser, SPass ;
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -266,7 +431,8 @@ public class AdminForm extends javax.swing.JFrame {
                 Vector v = new Vector();
                 for(int i =1; i<=n; i++){
                     v.add(rs.getString("id"));
-                    v.add(rs.getString("name"));
+                    v.add(rs.getString("fname"));
+                    v.add(rs.getString("lname"));
                     v.add(rs.getString("username"));
                     v.add(rs.getString("password"));
                     v.add(rs.getString("email"));
@@ -318,11 +484,21 @@ public class AdminForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBDelete;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLback;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JButton jbAdd;
+    private javax.swing.JButton jbUpdate;
     private javax.swing.JTable jtable;
+    private javax.swing.JLabel lblId;
+    private javax.swing.JLabel lblPass;
+    private javax.swing.JLabel lblUser;
     // End of variables declaration//GEN-END:variables
 }

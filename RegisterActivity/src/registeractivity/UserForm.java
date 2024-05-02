@@ -4,6 +4,16 @@
  */
 package registeractivity;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author caria
@@ -13,10 +23,46 @@ public class UserForm extends javax.swing.JFrame {
     /**
      * Creates new form UserForm
      */
+    private Connection con;
+    
+    
     public UserForm() {
+        this.con = con;
         initComponents();
+        try {
+            connection();
+        } catch (SQLException ex) {
+            
+        }
     }
 
+     // this is for the SQL Statement
+    Statement st;
+    
+    // required for connections
+    // Database name, driver, URL, usernmae, password
+    // creating a method for connection
+   
+    private static final String DbName = "dbregister";
+    private static final String DbDriver = "com.mysql.cj.jdbc.Driver";
+    private static final String DbUrl = "jdbc:mysql://localhost:3306/"+DbName;
+    private static final String DbUsername = "root"; 
+    private static final String DbPassword = "";
+
+    public void connection ()throws SQLException{
+        try {
+            Class.forName(DbDriver);
+            // url, username, password
+            con = DriverManager.getConnection(DbUrl, DbUsername, DbPassword);
+            st = con.createStatement();
+            if (con != null) {
+                System.out.println("Connection successful");
+            }
+                
+        } catch (ClassNotFoundException ex) {
+            
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,55 +76,195 @@ public class UserForm extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         UserWlcome = new javax.swing.JLabel();
         Namelbl = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        UserWlcome1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(51, 153, 0));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setBackground(new java.awt.Color(0, 51, 51));
 
         UserWlcome.setBackground(new java.awt.Color(0, 153, 153));
         UserWlcome.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         UserWlcome.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         UserWlcome.setText("Welcome! ");
 
-        Namelbl.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        Namelbl.setForeground(new java.awt.Color(0, 51, 51));
-        Namelbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Namelbl.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        Namelbl.setForeground(new java.awt.Color(0, 153, 153));
+        Namelbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+
+        jPanel3.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        UserWlcome1.setBackground(new java.awt.Color(0, 153, 153));
+        UserWlcome1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        UserWlcome1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserWlcome1.setText("Set your info");
+
+        jButton1.setBackground(new java.awt.Color(0, 153, 153));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Update");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setBackground(new java.awt.Color(0, 153, 153));
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton2.setText("Log out");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(UserWlcome1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(149, 149, 149))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(UserWlcome1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(20, 20, 20))
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(UserWlcome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(UserWlcome)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Namelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(76, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(Namelbl, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addComponent(UserWlcome, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(UserWlcome, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Namelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Namelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 520, 370));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 580, 410));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+        try {
+            String oldUsername = JOptionPane.showInputDialog(null, "Enter old Username:");
+            String oldPassword = JOptionPane.showInputDialog(null, "Enter old Password:");   
+    
+
+    int update = JOptionPane.showConfirmDialog(null, "Confirm to Update", "Warning", JOptionPane.YES_NO_OPTION);
+
+    if (update == JOptionPane.YES_OPTION) {
+        if (oldUsername.isEmpty() || oldPassword.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter old username and password.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String selectQuery = "SELECT * FROM user WHERE username=? AND password=?";
+            PreparedStatement pst = con.prepareStatement(selectQuery);
+            pst.setString(1, oldUsername);
+            pst.setString(2, oldPassword);
+            ResultSet resultSet = pst.executeQuery();
+
+            if (resultSet.next()) {
+                String newUsername = JOptionPane.showInputDialog(null, "Enter New Username:");
+                String newPassword = JOptionPane.showInputDialog(null, "Enter New Password:");
+
+                try {
+                    if (newUsername == null || newPassword == null || newUsername.isEmpty() || newPassword.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Please fill out all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (!newUsername.matches("[a-zA-Z0-9]+")) {
+                        JOptionPane.showMessageDialog(null, "Invalid username. Username should contain only letters and numbers", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (!newPassword.matches("[a-zA-Z0-9]+")) {
+                        JOptionPane.showMessageDialog(null, "Invalid password. Password should contain only letters and numbers.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (newPassword.length() > 20) {
+                        JOptionPane.showMessageDialog(null, "Password should be maximum 20 characters long.", "Error", JOptionPane.ERROR_MESSAGE);   
+                    } else {
+                        String updateQuery = "UPDATE user SET username=?, password=? WHERE username=?";
+                        PreparedStatement prst = con.prepareStatement(updateQuery);
+                        prst.setString(1, newUsername);
+                        prst.setString(2, newPassword);
+                        prst.setString(3, oldUsername); 
+
+                        int rowsAffected = prst.executeUpdate();
+
+                        if (rowsAffected > 0) {
+                            JOptionPane.showMessageDialog(null, "Successfully Updated!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No details to update.");
+                        }
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error occurred while updating record.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+} catch (Exception ex) {
+    JOptionPane.showMessageDialog(null, "An error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+}
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        
+        int r = JOptionPane.showConfirmDialog(this, "Are you sure to Log out");
+        if(r==0){
+            LoginForm l = new LoginForm();
+            l.setVisible(true);
+            dispose();
+        }
+        
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     
     public void SetUser(String name){
@@ -122,7 +308,11 @@ public class UserForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Namelbl;
     private javax.swing.JLabel UserWlcome;
+    private javax.swing.JLabel UserWlcome1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 }
